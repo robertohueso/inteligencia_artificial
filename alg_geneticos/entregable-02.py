@@ -154,10 +154,27 @@ def algoritmo_genetico_t(problema_genetico,k,opt,ngen,tamaño,prop_cruces,prob_m
 # mejor fenotipo encontrado, y su valoración.
 
 # ========== Solución:
+def nueva_generacion_t(problema_genetico,k,opt,poblacion,n_padres,n_directos,prob_mutar):
+    mejores = seleccion_por_torneo(problema_genetico, poblacion, n_padres, k, opt)
+    #Diversidad debe ser tambien por torneo? FIXME
+    diversidad = seleccion_por_torneo(problema_genetico, poblacion, n_directos, k, opt)
+    hijos_diversidad = cruza_padres(problema_genetico, diversidad)
+    union = mejores + hijos_diversidad
+    mutacion = muta_individuos(problema_genetico, poblacion, prob_mutar)
+    return mutacion
 
+def decod(x):
+    string = ''
+    for i in x:
+        string += str(i)
+    return int(string, 2)
 
+def fit(x):
+    return decod(x)**2
 
-
+cuad_gen = Problema_Genetico([0,1], 10, decod, fit)
+sol = algoritmo_genetico_t(cuad_gen,3,max,20,10,0.7,0.1)
+print(sol)
 # ===================================================
 # Parte II: Representación del problema de la mochila
 # ===================================================
