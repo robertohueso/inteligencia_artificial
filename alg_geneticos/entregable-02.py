@@ -364,11 +364,38 @@ valores3 = [825594,1677009,1676628,1523970, 943972,  97426,
 
 # =========== Solución:
 
-m1g = Problema_Genetico([0,1], len(pesos1), decodifica_mochila, fitness_mochila)
-m2g = Problema_Genetico([0,1], len(pesos2), decodifica_mochila, fitness_mochila)
-m3g = Problema_Genetico([0,1], len(pesos3), decodifica_mochila, fitness_mochila)
+#Fitness casos particulares
+def fit1(cromosoma):
+    return fitness_mochila(cromosoma, 10, pesos1, 165, valores1)
+
+def fit2(cromosoma):
+    return fitness_mochila(cromosoma, 15, pesos2, 750, valores2)
+
+def fit3(cromosoma):
+    return fitness_mochila(cromosoma, 24, pesos3, 6404180, valores3)
+
+#Decodificar casos particulares
+def decod1(cromosoma):
+    return decodifica_mochila(cromosoma, 10, pesos1, 165)
+
+def decod2(cromosoma):
+    return decodifica_mochila(cromosoma, 15, pesos2, 750)
+
+def decod3(cromosoma):
+    return decodifica_mochila(cromosoma, 24, pesos3, 6404180)
+
+#Resolucion del problema
+m1g = Problema_Genetico([0,1], len(pesos1), decod1, fit1)
+m2g = Problema_Genetico([0,1], len(pesos2), decod2, fit2)
+m3g = Problema_Genetico([0,1], len(pesos3), decod3, fit3)
+
 sol_mochila1 = algoritmo_genetico_t(m1g, 3, max, 100, 50, 0.8, 0.05)
-print(sol_mochila1)
+sol_mochila2 = algoritmo_genetico_t(m2g, 3, max, 100, 50, 0.8, 0.05)
+sol_mochila3 = algoritmo_genetico_t(m3g, 3, max, 100, 50, 0.8, 0.05)
+
+print("Solucion mochila 1: " + str(sol_mochila1))
+print("Solucion mochila 2: " + str(sol_mochila2))
+print("Solucion mochila 3: " + str(sol_mochila3))
 
 
 
