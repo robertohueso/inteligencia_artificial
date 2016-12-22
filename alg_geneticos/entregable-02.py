@@ -155,15 +155,12 @@ def algoritmo_genetico_t(problema_genetico,k,opt,ngen,tamaño,prop_cruces,prob_m
 
 # ========== Solución:
 def nueva_generacion_t(problema_genetico,k,opt,poblacion,n_padres,n_directos,prob_mutar):
-    mejores = seleccion_por_torneo(problema_genetico, poblacion, n_padres, k, opt)
-    #Diversidad debe ser tambien por torneo? FIXME
-    diversidad = seleccion_por_torneo(problema_genetico, poblacion, n_directos, k, opt)
-    hijos_diversidad = cruza_padres(problema_genetico, diversidad)
-    union = mejores + hijos_diversidad
-    mutacion = muta_individuos(problema_genetico, poblacion + union, prob_mutar)
+    padres = seleccion_por_torneo(problema_genetico, poblacion, n_padres, k, opt)
+    hijos = cruza_padres(problema_genetico, padres)
+    mutacion = muta_individuos(problema_genetico, hijos, prob_mutar)
     return mutacion
 
-#Funciones extra
+#Funciones extra para el problema cuad_gen
 def decod_cuad(x):
     string = ''
     for i in x:
@@ -173,6 +170,7 @@ def decod_cuad(x):
 def fit_cuad(x):
     return decod_cuad(x)**2
 
+#Solucion
 cuad_gen = Problema_Genetico([0,1], 10, decod_cuad, fit_cuad)
 sol_cuad_max = algoritmo_genetico_t(cuad_gen,3,max,20,10,0.7,0.1)
 sol_cuad_min = algoritmo_genetico_t(cuad_gen,3,min,20,10,0.7,0.1)
@@ -219,26 +217,17 @@ print("Cuad Min: " + str(sol_cuad_min))
 
 
 # ========== Solución:
-#FIXME no estoy seguro de que sea esto
+
 def decodifica_mochila(cromosoma, n_objetos, pesos, capacidad):
     peso_acumulado = 0
     lista_valores = []
     for i in range(len(cromosoma)):
-        if cromosoma[i] == 1:
-            if peso_acumulado + pesos[i] <= capacidad:
-                lista_valores.append(cromosoma[i])
-                peso_acumulado += pesos[i]
-            else:
-                lista_valores.append(0)
+        if cromosoma[i] == 1 and peso_acumulado + pesos[i] <= capacidad:
+            lista_valores.append(1)
+            peso_acumulado += pesos[i]
         else:
             lista_valores.append(0)
     return lista_valores
-
-
-
-
-
-
 
 # ==============================================
 
@@ -265,15 +254,6 @@ def fitness_mochila(cromosoma, n_objetos, pesos, capacidad, valores):
         if lista[i] == 1:
             valor_actual += valores[i]
     return valor_actual
-
-
-
-
-
-
-
-
-
 
 
 # ===============================================
@@ -390,14 +370,14 @@ m2g = Problema_Genetico([0,1], len(pesos2), decod2, fit2)
 m3g = Problema_Genetico([0,1], len(pesos3), decod3, fit3)
 
 sol_mochila1 = algoritmo_genetico_t(m1g, 3, max, 100, 50, 0.8, 0.05)
-sol_mochila2 = algoritmo_genetico_t(m2g, 3, max, 100, 50, 0.8, 0.05)
-sol_mochila3 = algoritmo_genetico_t(m3g, 3, max, 100, 50, 0.8, 0.05)
+sol_mochila2 = algoritmo_genetico_t(m2g, 3, max, 200, 100, 0.8, 0.05)
+sol_mochila3 = algoritmo_genetico_t(m3g, 3, max, 400, 150, 0.75, 0.1)
 
 print("Solucion mochila 1: " + str(sol_mochila1))
 print("Solucion mochila 2: " + str(sol_mochila2))
 print("Solucion mochila 3: " + str(sol_mochila3))
 
-
+#Por Roberto Hueso Gomez.
 
 # ===================================
 
