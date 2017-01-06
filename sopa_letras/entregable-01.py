@@ -141,15 +141,9 @@
 # nzxehejgdzycvod
 # ngxdipqwyowqfqf
 
-
-
-
-
-
-
-
-
-
+def imprime_sopa(sopa):
+    for line in sopa:
+        print(line)
 
 # -----------------------------------------------------------------------------
 # EJERCICIO (2)
