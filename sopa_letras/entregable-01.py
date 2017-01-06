@@ -172,20 +172,28 @@ def imprime_sopa(sopa):
 # True
 # -----------------------------------------------------------------------------
 
+def comprueba_palabra(palabra,sopa,orx,ory,dirx,diry):
+    altura = len(sopa)
+    anchura = len(sopa[0])
+    i = 0
 
+    while orx >= 0 and orx < altura and ory >= 0 and ory < anchura:
+        if palabra[i] != sopa[orx][ory]:
+            return False
+        orx += dirx
+        ory += diry
+        i += 1
+        if i == len(palabra):
+            return True
 
+#Para pruebas
+sopa0=['kbhypmfxtrdqrcq', 'inteligencialat', 'altaqrehurjxajh',
+            'reavmjdwnwzwlal', 'tipigfxomrydxce', 'nbbhcrhkmjslblo', 
+            'tooicicrejebbyt', 'nszdhnftwiwafez', 'uofkwjqihngpplw', 
+            'dnhxncujtefxviu', 'kxithejerrnjyye', 'ctubygrtueadxuc', 
+            'fupcgpnozhhnjjt', 'nzxehejgdzycvod', 'ngxdipqwyowqfqf']
 
-
-
-
-
-
-
-
-
-
-
-
+print(comprueba_palabra("entregable",sopa0,13, 5,-1, 1))
 # -----------------------------------------------------------------------------
 # EJERCICIO (3)
 
