@@ -274,16 +274,25 @@ print(d)
 #               
 # -----------------------------------------------------------------------------
 
+def imprime_sopa_resuelta(sopa,palabras):
+    resuelta = []
+    for fila in sopa:
+        resuelta.append(" " * len(fila))
+    soluciones = resuelve_sopa_de_letras(sopa, palabras)
 
+    #Rellena con las soluciones
+    for palabra, pos in soluciones.items():
+        x = pos[0][0]
+        dx = pos[1][0]
+        y = pos[0][1]
+        dy = pos[1][1]
+        for letra in palabra:
+            resuelta[x] = resuelta[x][:y] + letra + resuelta[x][y+1:]
+            x += dx
+            y += dy
+    imprime_sopa(resuelta)
 
-
-
-
-
-
-
-
-
+imprime_sopa_resuelta(sopa0, ["ejercicio","tortilla","inteligencia","artificial","python","pupitre","entregable"]) 
 
 # -----------------------------------------------------------------------------
 # EJERCICIO (5)
