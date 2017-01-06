@@ -222,14 +222,23 @@ print(comprueba_palabra("entregable",sopa0,13, 5,-1, 1))
 # distinción de casos. 
 # -----------------------------------------------------------------------------
 
+def resuelve_sopa_de_letras(sopa, palabras):
+    direcciones = [(-1,0),(1,0),(0,1),(0,-1),(-1,-1),(-1,1),(1,1),(1,-1)]
+    altura = len(sopa)
+    anchura = len(sopa[0])
+    diccionario = {}
 
+    for palabra in palabras:
+        for x in range(altura):
+            for y in range(anchura):
+                for direc in direcciones:
+                    if comprueba_palabra(palabra, sopa, x, y, direc[0], direc[1]) == True:
+                        diccionario[palabra] = ((x, y), (direc[0], direc[1]))
+    return diccionario
 
-
-
-
-
-
-
+#Para pruebas
+d = resuelve_sopa_de_letras(sopa0,["ejercicio","tortilla","inteligencia","artificial","python","pupitre","entregable"])
+print(d)
 # -----------------------------------------------------------------------------
 # EJERCICIO (4)
 
