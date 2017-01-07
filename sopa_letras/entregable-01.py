@@ -185,15 +185,6 @@ def comprueba_palabra(palabra,sopa,orx,ory,dirx,diry):
         i += 1
         if i == len(palabra):
             return True
-
-#Para pruebas
-sopa0=['kbhypmfxtrdqrcq', 'inteligencialat', 'altaqrehurjxajh',
-            'reavmjdwnwzwlal', 'tipigfxomrydxce', 'nbbhcrhkmjslblo', 
-            'tooicicrejebbyt', 'nszdhnftwiwafez', 'uofkwjqihngpplw', 
-            'dnhxncujtefxviu', 'kxithejerrnjyye', 'ctubygrtueadxuc', 
-            'fupcgpnozhhnjjt', 'nzxehejgdzycvod', 'ngxdipqwyowqfqf']
-
-print(comprueba_palabra("entregable",sopa0,13, 5,-1, 1))
 # -----------------------------------------------------------------------------
 # EJERCICIO (3)
 
@@ -235,10 +226,6 @@ def resuelve_sopa_de_letras(sopa, palabras):
                     if comprueba_palabra(palabra, sopa, x, y, direc[0], direc[1]) == True:
                         diccionario[palabra] = ((x, y), (direc[0], direc[1]))
     return diccionario
-
-#Para pruebas
-d = resuelve_sopa_de_letras(sopa0,["ejercicio","tortilla","inteligencia","artificial","python","pupitre","entregable"])
-print(d)
 # -----------------------------------------------------------------------------
 # EJERCICIO (4)
 
@@ -292,8 +279,6 @@ def imprime_sopa_resuelta(sopa,palabras):
             y += dy
     imprime_sopa(resuelta)
 
-imprime_sopa_resuelta(sopa0, ["ejercicio","tortilla","inteligencia","artificial","python","pupitre","entregable"]) 
-
 # -----------------------------------------------------------------------------
 # EJERCICIO (5)
 #
@@ -331,16 +316,75 @@ imprime_sopa_resuelta(sopa0, ["ejercicio","tortilla","inteligencia","artificial"
 # y radom.randint pueden ser de utilidad. Además, también puede ser de
 # utilidad la función chr. 
 
+import random
 
+def cambia_letra(sopa, x, y, letra):
+    sopa[x] = sopa[x][:y]+letra+sopa[x][y+1:]
 
+def comprueba_compatibilidad(sopa, palabra, x, y, dx, dy):
+    for letra in palabra:
+        if sopa[x][y] != "0" and sopa[x][y] != letra:
+            return False
+        x += dx
+        y += dy
+    return True
 
+def elegir_coordenadas(d, palabra):
+    direcciones = [(-1,0),(1,0),(0,1),(0,-1),(-1,-1),(-1,1),(1,1),(1,-1)]
+    direc = random.choice(direcciones)
+    #Rango inicial X
+    if direc[0] >= 0:
+        min_x = 0
+        max_x = d - len(palabra)
+    else:
+        min_x = len(palabra)
+        max_x = d - 1
+     #Rango inicial Y
+    if direc[1] >= 0:
+        min_y = 0
+        max_y = d - len(palabra)
+    else:
+        min_y = len(palabra)
+        max_y = d - 1
+    x = random.randint(min_x, max_x)
+    y = random.randint(min_y, max_y)
+    return [x, y, direc[0], direc[1]]
 
+def genera_sopa_de_letras(d,n,palabras):
+    muestra = random.sample(palabras, n)
+    sopa = []
+    for i in range(d):
+        sopa.append("0" * d)
+    for palabra in palabras:
+        #Insertar palabra
+        insertada = False
+        while insertada != True:
+            cord = elegir_coordenadas(d, palabra)
+            x = cord[0]
+            y = cord[1]
+            dx = cord[2]
+            dy = cord[3]
+            if comprueba_compatibilidad(sopa, palabra, x, y, dx, dy):
+                for letra in palabra:
+                    cambia_letra(sopa, x, y, letra)
+                    x += dx
+                    y += dy
+                insertada = True
+    for x in range(d):
+        for y in range(d):
+            if sopa[x][y] == "0":
+                cambia_letra(sopa, x, y, random.choice("ABCDEFGHIJKLMNOPQRSTUVWYZ"))
+    return sopa
 
+#Pruebas
+print("Probamos el ejercicio 5---")
+palabras = ["ejercicio","tortilla","inteligencia","artificial","python","pupitre","entregable"]
+sopa01=genera_sopa_de_letras(15,5,palabras)
+imprime_sopa(sopa01)
+print("----SOLUCION----")
+imprime_sopa_resuelta(sopa01, palabras)
 
-
-
-
-
+#Por Roberto Hueso Gómez
 # --------------------------------------------------------
 
 # Lo que sigue son algunas ejemplos de uso de las funciones anteriores, para
