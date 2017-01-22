@@ -12,7 +12,7 @@ atributos=[("Edad",['Joven','Prepresbicia','Presbicia']),
            ("Lagrima",['Reducida','Normal'])]
 
 atributo_clasificación='Lente'
-clases=['ninguna','blanda','rígida']
+clases=['Ninguna','Blanda','Rígida']
 
 
 

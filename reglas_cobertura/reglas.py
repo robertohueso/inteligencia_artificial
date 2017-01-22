@@ -564,8 +564,21 @@ def reglas_decision_cobertura(entr,atributos,clases):
     reglas[-1][1] = []
     return reglas
 
-#reglas_decision_cobertura(jugar_tenis.entr, jugar_tenis.atributos, jugar_tenis.clases)
+def imprime_RD(reglas_decision,atributos,atributo_clasificacion):
+    for clase in reglas_decision:
+        for regla in clase[1]:
+            string = " * Si "
+            for atomo in regla:
+                string += "(" + atributos[atomo[0]][0] + "= "
+                string += str(atomo[1]) + ") y "
+            string += "Entonces " + atributo_clasificacion + " = " + str(clase[0])
+            print(string)
+    print(" * En caso contrario, " + atributo_clasificacion + " = " + reglas_decision[-1][0])
 
+#reglas = reglas_decision_cobertura(jugar_tenis.entr, jugar_tenis.atributos, jugar_tenis.clases)
+#imprime_RD(reglas, jugar_tenis.atributos, jugar_tenis.atributo_clasificación)
+#reglas = reglas_decision_cobertura(lentes.entr, lentes.atributos, lentes.clases)
+#imprime_RD(reglas, lentes.atributos, lentes.atributo_clasificación)
 
 
 
