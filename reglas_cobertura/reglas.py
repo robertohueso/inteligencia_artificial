@@ -266,17 +266,18 @@ def quitar_muestras(original, eliminar):
             original.remove(muestra)
 
 def cobertura(entr,atributos,clase):
+    conjunto = entr.copy()
     reglas_aprendidas = []
-    while contiene_clase(entr, clase):
+    while contiene_clase(conjunto, clase):
         regla = []
-        while contiene_ejemplo_incorrecto(entr, regla, clase) or len(regla) < len(atributos):
-            mejor_atrib = mejor_prox_atributo(entr, atributos, regla, clase)
+        while contiene_ejemplo_incorrecto(conjunto, regla, clase) or len(regla) < len(atributos):
+            mejor_atrib = mejor_prox_atributo(conjunto, atributos, regla, clase)
             regla.append((mejor_atrib[1], mejor_atrib[2]))
             if mejor_atrib[0] == 1.0:
                 break
         reglas_aprendidas.append(regla)
-        muestras_cubiertas = muestras_que_cumplen_clase(entr, regla, clase)
-        quitar_muestras(entr, muestras_cubiertas)
+        muestras_cubiertas = muestras_que_cumplen_clase(conjunto, regla, clase)
+        quitar_muestras(conjunto, muestras_cubiertas)
     return reglas_aprendidas
 
 # ---------------------------
@@ -546,10 +547,13 @@ def cobertura(entr,atributos,clase):
 # >>> rendimiento_RD(credito_rd,credito.test)
 # 0.8895705521472392
 
+def reglas_decision_cobertura(entr,atributos,clases):
+    reglas = {}
+    for clase in clases:
+        reglas[clase] = cobertura(entr, atributos, clase)
+    print(reglas)
 
-
-
-
+reglas_decision_cobertura(jugar_tenis.entr, jugar_tenis.atributos, jugar_tenis.clases)
 
 
 
