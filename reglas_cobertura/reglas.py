@@ -200,7 +200,7 @@ import credito
 
 def contiene_clase(entr, clase):
     for muestra in entr:
-        if clase in muestra:
+        if muestra[-1] == clase:
             return True
     return False
 
@@ -229,8 +229,8 @@ def contiene_ejemplo_incorrecto(entr, regla, clase):
     for muestra in entr:
         if muestra_compatible(muestra, regla):
             if muestra[-1] != clase:
-                return False
-    return True
+                return True
+    return False
 
 def atributo_en_regla(index, regla):
     for atomo in regla:
@@ -244,7 +244,6 @@ def mejor_prox_atributo(entr, atributos, regla, clase):
     for i, atributo in enumerate(atributos):
         if not atributo_en_regla(i, regla):
             atributos_asignables.append((i, atributo[1]))
-    
     #Comprueba cual es el mejor proximo atributo a elegir
     mejor_actual = (0, -1, '') #Mejor(proporcion, numero_atributo, valor)
     for atributo in atributos_asignables:
@@ -253,7 +252,7 @@ def mejor_prox_atributo(entr, atributos, regla, clase):
             n_cumplidoras_regla = len(muestras_que_cumplen(entr, nueva_regla))
 
             if n_cumplidoras_regla != 0:
-                proporcion = len(muestras_que_cumplen_clase(entr, regla, clase))/n_cumplidoras_regla
+                proporcion = len(muestras_que_cumplen_clase(entr, nueva_regla, clase))/n_cumplidoras_regla
             else:
                 proporcion = 0
             
@@ -273,14 +272,13 @@ def cobertura(entr,atributos,clase):
         while contiene_ejemplo_incorrecto(entr, regla, clase) or len(regla) < len(atributos):
             mejor_atrib = mejor_prox_atributo(entr, atributos, regla, clase)
             regla.append(mejor_atrib)
-            print(regla)
         reglas_aprendidas.append(regla)
         muestras_cubiertas = muestras_que_cumplen_clase(entr, regla, clase)
         quitar_muestras(entr, muestras_cubiertas)
     return reglas_aprendidas
 
 
-print(cobertura(jugar_tenis.entr, jugar_tenis.atributos, 'si'))
+cobertura(jugar_tenis.entr, jugar_tenis.atributos, jugar_tenis.clases[0])
 # ---------------------------
 # PARTE 2: Reglas de decisión
 # ---------------------------
