@@ -10,8 +10,8 @@
 # --------------------------------------------------------------------------
 # Primer componente del grupo (o único autor): 
 #
-# APELLIDOS:
-# NOMBRE: 
+# APELLIDOS: HUESO GOMEZ
+# NOMBRE: ROBERTO
 # 
 # Segundo componente (si se trata de un grupo):
 #
@@ -198,10 +198,89 @@ import credito
 #  [(0, 'laboral'), (4, 'divorciado'), (2, 'ninguna'), (3, 'ninguno')]]
 # ---------
 
+def contiene_clase(entr, clase):
+    for muestra in entr:
+        if clase in muestra:
+            return True
+    return False
+
+def muestra_compatible(muestra, regla):
+    for atomo in regla:
+        if muestra[atomo[0]] != atomo[1]:
+            return False
+    return True
+
+def muestras_que_cumplen(entr, regla):
+    cumplidoras = []
+    for muestra in entr:
+        if muestra_compatible(muestra, regla):
+            cumplidoras.append(muestra)
+    return cumplidoras
+
+def muestras_que_cumplen_clase(entr, regla, clase):
+    cumplidoras = muestras_que_cumplen(entr, regla)
+    cumplidoras_de_clase = []
+    for muestra in cumplidoras:
+        if muestra[-1] == clase:
+            cumplidoras_de_clase.append(muestra)
+    return cumplidoras_de_clase
+
+def contiene_ejemplo_incorrecto(entr, regla, clase):
+    for muestra in entr:
+        if muestra_compatible(muestra, regla):
+            if muestra[-1] != clase:
+                return False
+    return True
+
+def atributo_en_regla(index, regla):
+    for atomo in regla:
+        if atomo[0] == index:
+            return True
+    return False
+
+def mejor_prox_atributo(entr, atributos, regla, clase):
+    atributos_asignables = []
+    #Comprueba que atributos no estan aun en la regla
+    for i, atributo in enumerate(atributos):
+        if not atributo_en_regla(i, regla):
+            atributos_asignables.append((i, atributo[1]))
+    
+    #Comprueba cual es el mejor proximo atributo a elegir
+    mejor_actual = (0, -1, '') #Mejor(proporcion, numero_atributo, valor)
+    for atributo in atributos_asignables:
+        for valor in atributo[1]:
+            nueva_regla = regla + [(atributo[0], valor)]
+            n_cumplidoras_regla = len(muestras_que_cumplen(entr, nueva_regla))
+
+            if n_cumplidoras_regla != 0:
+                proporcion = len(muestras_que_cumplen_clase(entr, regla, clase))/n_cumplidoras_regla
+            else:
+                proporcion = 0
+            
+            if proporcion > mejor_actual[0]:
+                mejor_actual = (proporcion, atributo[0], valor)
+    return (mejor_actual[1], mejor_actual[2])
+
+def quitar_muestras(original, eliminar):
+    for muestra in eliminar:
+        if muestra in original:
+            original.remove(muestra)
+
+def cobertura(entr,atributos,clase):
+    reglas_aprendidas = []
+    while contiene_clase(entr, clase):
+        regla = []
+        while contiene_ejemplo_incorrecto(entr, regla, clase) or len(regla) < len(atributos):
+            mejor_atrib = mejor_prox_atributo(entr, atributos, regla, clase)
+            regla.append(mejor_atrib)
+            print(regla)
+        reglas_aprendidas.append(regla)
+        muestras_cubiertas = muestras_que_cumplen_clase(entr, regla, clase)
+        quitar_muestras(entr, muestras_cubiertas)
+    return reglas_aprendidas
 
 
-
-
+print(cobertura(jugar_tenis.entr, jugar_tenis.atributos, 'si'))
 # ---------------------------
 # PARTE 2: Reglas de decisión
 # ---------------------------
