@@ -226,10 +226,10 @@ def muestras_que_cumplen_clase(entr, regla, clase):
     return cumplidoras_de_clase
 
 def contiene_ejemplo_incorrecto(entr, regla, clase):
-    for muestra in entr:
-        if muestra_compatible(muestra, regla):
-            if muestra[-1] != clase:
-                return True
+    muestras_ajustadas = muestras_que_cumplen(entr, regla)
+    for muestra in muestras_ajustadas:
+        if muestra[-1] != clase:
+            return True
     return False
 
 def atributo_en_regla(index, regla):
@@ -255,10 +255,10 @@ def mejor_prox_atributo(entr, atributos, regla, clase):
                 proporcion = len(muestras_que_cumplen_clase(entr, nueva_regla, clase))/n_cumplidoras_regla
             else:
                 proporcion = 0
-            
-            if proporcion > mejor_actual[0]:
+            if proporcion > mejor_actual[0] or (n_cumplidoras_regla > len(muestras_que_cumplen(entr, regla + [(mejor_actual[1], mejor_actual[2])])) and proporcion == mejor_actual[0]):
                 mejor_actual = (proporcion, atributo[0], valor)
-    return (mejor_actual[1], mejor_actual[2])
+
+    return mejor_actual
 
 def quitar_muestras(original, eliminar):
     for muestra in eliminar:
@@ -271,14 +271,14 @@ def cobertura(entr,atributos,clase):
         regla = []
         while contiene_ejemplo_incorrecto(entr, regla, clase) or len(regla) < len(atributos):
             mejor_atrib = mejor_prox_atributo(entr, atributos, regla, clase)
-            regla.append(mejor_atrib)
+            regla.append((mejor_atrib[1], mejor_atrib[2]))
+            if mejor_atrib[0] == 1.0:
+                break
         reglas_aprendidas.append(regla)
         muestras_cubiertas = muestras_que_cumplen_clase(entr, regla, clase)
         quitar_muestras(entr, muestras_cubiertas)
     return reglas_aprendidas
 
-
-cobertura(jugar_tenis.entr, jugar_tenis.atributos, jugar_tenis.clases[0])
 # ---------------------------
 # PARTE 2: Reglas de decisión
 # ---------------------------
@@ -355,7 +355,7 @@ cobertura(jugar_tenis.entr, jugar_tenis.atributos, jugar_tenis.clases[0])
 
 # Por ejemplo, lo que sigue es la representación en python del conjunto de
 # reglas de decisión anterior:
-
+ 
 # [['Rígida',
 #  [[(2, '+'), (3, 'Normal'), (1, 'Miope')],
 #   [(0, 'Joven'), (2, '+'), (3, 'Normal')]]],
