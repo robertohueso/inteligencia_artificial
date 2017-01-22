@@ -547,13 +547,24 @@ def cobertura(entr,atributos,clase):
 # >>> rendimiento_RD(credito_rd,credito.test)
 # 0.8895705521472392
 
-def reglas_decision_cobertura(entr,atributos,clases):
-    reglas = {}
-    for clase in clases:
-        reglas[clase] = cobertura(entr, atributos, clase)
-    print(reglas)
+def apariciones_clase(entr, clase):
+    count = 0
+    for muestra in entr:
+        if muestra[-1] == clase:
+            count += 1
+    return count
 
-reglas_decision_cobertura(jugar_tenis.entr, jugar_tenis.atributos, jugar_tenis.clases)
+def reglas_decision_cobertura(entr,atributos,clases):
+    reglas = []
+    for clase in clases:
+        reglas.append([clase, cobertura(entr, atributos, clase)])
+    #Soluciona que un mismo valor sea cubierto por varias reglas
+    reglas.sort(key = lambda x: apariciones_clase(entr, x[0]))
+    #Soluciona que ninguna regla cubra el ejemplo
+    reglas[-1][1] = []
+    return reglas
+
+#reglas_decision_cobertura(jugar_tenis.entr, jugar_tenis.atributos, jugar_tenis.clases)
 
 
 
