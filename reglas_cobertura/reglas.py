@@ -569,7 +569,7 @@ def imprime_RD(reglas_decision,atributos,atributo_clasificacion):
         for regla in clase[1]:
             string = " * Si "
             for atomo in regla:
-                string += "(" + atributos[atomo[0]][0] + "= "
+                string += "(" + atributos[atomo[0]][0] + " = "
                 string += str(atomo[1]) + ") y "
             string += "Entonces " + atributo_clasificacion + " = " + str(clase[0])
             print(string)
@@ -580,7 +580,20 @@ def imprime_RD(reglas_decision,atributos,atributo_clasificacion):
 #reglas = reglas_decision_cobertura(lentes.entr, lentes.atributos, lentes.clases)
 #imprime_RD(reglas, lentes.atributos, lentes.atributo_clasificación)
 
+def se_ajusta(ej, regla):
+    for atomo in regla:
+        if ej[atomo[0]] != atomo[1]:
+            return False
+    return True
+        
+def clasifica_RD(ej,reglas_decision):
+    for clase in reglas_decision:
+        for regla in clase[1]:
+            if se_ajusta(ej, regla):
+                return clase[0]
+    return reglas_decision[-1][0]
 
+#print(clasifica_RD(['Soleado' ,'Suave','Alta','Fuerte'], reglas))
 
 
 
