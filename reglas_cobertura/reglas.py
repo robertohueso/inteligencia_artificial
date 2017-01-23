@@ -737,7 +737,40 @@ def rendimiento_RD(reglas_decision,ejemplos):
 # aunque la técnica de podar que aquí se pide es simple y bastante aceptable,
 # existen técnicas de poda más sofisticadas, que obtienen mejores resultados.
 
+def eliminar_ultima_regla(clase):
+    nueva_clase = clase.copy()
+    if len(nueva_clase[1]) > 1:
+        nueva_clase[1].remove(nueva_clase[1][-1])
+    return nueva_clase
 
+def eliminar_ultima_condicion(regla):
+    nueva_regla = regla.copy()
+    if len(nueva_regla) > 1:
+        del(nueva_regla[-1])
+    return nueva_regla
+
+def poda_RD(reglas_de_decision,ejemplos):
+    #Poda de reglas
+    for i, clase in enumerate(reglas_de_decision):
+        #Poda de condiciones
+        for j, regla in enumerate(clase[1]):
+            regla_inicial = regla.copy()
+            rendimiento_inicial = rendimiento_RD(reglas_de_decision, ejemplos)
+            clase[1][j] = eliminar_ultima_condicion(regla)
+            if rendimiento_RD(reglas_de_decision, ejemplos) < rendimiento_inicial:
+                clase[1][j] = regla_inicial
+        rd_inicial = reglas_de_decision.copy()
+        rendimiento_inicial = rendimiento_RD(reglas_de_decision, ejemplos)
+        reglas_de_decision[i] = eliminar_ultima_regla(clase)
+        if rendimiento_RD(reglas_de_decision, ejemplos) < rendimiento_inicial:
+            reglas_de_decision[i] = rd_inicial
+    return reglas_de_decision
+
+#votos_rd = reglas_decision_cobertura(votos.entr, votos.atributos, votos.clases)
+#print("Rendimiento inicial: " + str(rendimiento_RD(votos_rd, votos.test)))
+#votos_rd_pd = poda_RD(votos_rd,votos.valid)
+#imprime_RD(votos_rd_pd,votos.atributos,votos.atributo_clasificación)
+#print("Rendimiento podado: " + str(rendimiento_RD(votos_rd_pd, votos.test)))
 
 # -----------------------
 # PARTE 4: Clasificadores
