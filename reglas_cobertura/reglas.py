@@ -595,7 +595,15 @@ def clasifica_RD(ej,reglas_decision):
 
 #print(clasifica_RD(['Soleado' ,'Suave','Alta','Fuerte'], reglas))
 
+def rendimiento_RD(reglas_decision,ejemplos):
+    aciertos = 0
+    for ejemplo in ejemplos:
+        if clasifica_RD(ejemplo, reglas_decision) == ejemplo[-1]:
+            aciertos += 1 
+    return aciertos / len(ejemplos)
 
+#reglas_votos = reglas_decision_cobertura(votos.entr, votos.atributos, votos.clases)
+#print(rendimiento_RD(reglas_votos, votos.test))
 
 # -----------------------------------
 # PARTE 3: Poda para reducir el error
