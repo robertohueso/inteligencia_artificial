@@ -951,7 +951,78 @@ def rendimiento(clasificador,ejemplos):
 # >>> rendimiento(clasificador_cobpos_credito,credito.test)
 # 0.9877300613496932
 
+class ClasificadorCobertura(MetodoClasificacion):
+    """
+    Clase base para métodos de clasificación
+    """
 
+    def __init__(self, atributo_clasificacion,clases,atributos):
+
+        """
+        Argumentos de entrada al constructor (ver jugar_tenis.py, por ejemplo)
+         
+        * atributo_clasificacion: nombre del atributo de clasificación 
+        * clases: lista de posibles valores del atributo de clasificación.  
+        * atributos: lista con pares en los que están los atributos (o
+                     características)  y su lista de valores posibles.
+        """
+        super().__init__(atributo_clasificacion, clases, atributos)
+        self.entrenado = False
+
+
+    def entrena(self,entr,valid=None):
+        """
+        Método para entrenamiento y ajuste del
+        clasificador.
+        
+        Argumentos de entrada:
+
+        * entr: ejemplos del conjunto de entrenamiento 
+        * valid: ejemplos del conjunto de validación. 
+                 Algunos clasificadores simples no usan conjunto de
+                 validación, por lo que en esos casos se 
+                 omitiría este argumento. 
+        """
+
+        self.reglas_decision = reglas_decision_cobertura(entr, self.atributos, self.clases)
+        if valid != None:
+            self.reglas_decision = poda_RD(self.reglas_decision, valid)
+        self.entrenado = True
+        
+    def clasifica(self, ejemplo):
+        """
+        Método para clasificación de un ejemplo, una vez entrenado el
+        clasificador.
+        
+        Si se llama a este método sin haber entrenado previamente el
+        clasificador, debe devolver un excepción ClasificadorNoEntrenado
+        """
+        try:
+            if not self.entrenado:
+                raise ClasificadorNoEntrenado
+            return clasifica_RD(ejemplo, self.reglas_decision)
+        except ClasificadorNoEntrenado:
+            print("Clasificador no entrenado!")
+
+    def imprime_clasificador(self):
+        """
+        Método para imprimir por pantalla el clasificador
+        obtenido. 
+
+        Si se llama a este método sin haber entrenado previamente el
+        clasificador, debe devolver un excepción ClasificadorNoEntrenado 
+        """
+        try:
+            if not self.entrenado:
+                raise ClasificadorNoEntrenado
+            imprime_RD(self.reglas_decision, self.atributos, self.atributo_clasificacion)
+        except ClasificadorNoEntrenado:
+            print("Clasificador no entrenado!")
+
+#clasificador = ClasificadorCobertura(votos.atributo_clasificación, votos.clases, votos.atributos)
+#clasificador.entrena(votos.entr, votos.valid)
+#clasificador.imprime_clasificador()
+#print(clasificador.clasifica(votos.test[0]))
 
 # ---------------------------------------------------------------------------
 # PARTE 5: Entendiendo la supervivencia en el hundimiento del Titanic
