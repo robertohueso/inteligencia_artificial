@@ -1087,8 +1087,6 @@ class ClasificadorCobertura(MetodoClasificacion):
 #   realizado hasta llegar a esas reglas de decisoón. Incluir este conjuto de
 #   reglas decisión (como comentario al código) en el fichero titanic.py
 
-
-
-
-
-
+import titanic
+titanic_rd = reglas_decision_cobertura(titanic.entr, titanic.atributos, titanic.clases)
+#imprime_RD(titanic_rd, titanic.atributos, titanic.atributo_clasificacion)
