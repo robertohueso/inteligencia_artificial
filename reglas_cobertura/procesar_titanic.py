@@ -60,6 +60,56 @@ def procesar_edad(entr_bruto):
             muestra[1] = 'Mayor'
     return entr_bruto
 
+def comprobar_proporcion(lista, dif_max):
+    for i, numero in enumerate(lista):
+        if abs(lista[i-1] - lista[i]) > dif_max:
+            return False
+    return True
+
+def estratificar(entr_bruto, cantidad, dif_max):
+    nuevo_entr = []
+    clase = [0, 0, 0]
+    edad = [0, 0]
+    sexo = [0 ,0]
+    while cantidad != 0:
+        muestra = random.choice(entr_bruto)
+        if 'Primera' in muestra:
+            clase[0] += 1
+        elif 'Segunda' in muestra:
+            clase[1] += 1
+        else:
+            clase[2] += 1
+        if 'Menor' in muestra:
+            edad[0] += 1
+        else:
+            edad[1] += 1
+        if 'Femenino' in muestra:
+            sexo[0] += 1
+        else:
+            sexo[1] += 1
+
+        if comprobar_proporcion(clase, dif_max) and comprobar_proporcion(edad, dif_max) and comprobar_proporcion(sexo, dif_max):
+            nuevo_entr.append(muestra)
+            cantidad -= 1
+        else:
+            if 'Primera' in muestra:
+                clase[0] -= 1
+            elif 'Segunda' in muestra:
+                clase[1] -= 1
+            else:
+                clase[2] -= 1
+            if 'Menor' in muestra:
+                edad[0] -= 1
+            else:
+                edad[1] -= 1
+            if 'Femenino' in muestra:
+                sexo[0] -= 1
+            else:
+                sexo[1] -= 1
+    return nuevo_entr
+
+#Generamos el archivo titanic.py-----------------------------
+
 atributos=[('Clase',['Primera', 'Segunda', 'Tercera']),
            ('Edad',['Menor', 'Mayor']),
            ('Sexo', ['Femenino', 'Masculino'])
@@ -84,9 +134,9 @@ for fila in tabla:
     muestra = clasificar(clase, edad, sexo, sobrevive)
     entr_bruto.append(muestra)
 entr_bruto = procesar_edad(entr_bruto)
-
-entr = random.sample(entr_bruto, 600)
-valid = random.sample(entr_bruto,10)
+    
+entr = estratificar(entr_bruto, 10, 1)
+valid = estratificar(entr_bruto, 5, 1)
 test = random.sample(entr_bruto, 5)
 
 titanicpy = open('titanic.py', 'w+')

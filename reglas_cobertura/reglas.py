@@ -1088,5 +1088,8 @@ class ClasificadorCobertura(MetodoClasificacion):
 #   reglas decisión (como comentario al código) en el fichero titanic.py
 
 import titanic
-titanic_rd = reglas_decision_cobertura(titanic.entr, titanic.atributos, titanic.clases)
-#imprime_RD(titanic_rd, titanic.atributos, titanic.atributo_clasificacion)
+
+clasificador_titanic = ClasificadorCobertura(titanic.atributo_clasificacion, titanic.clases, titanic.atributos)
+clasificador_titanic.entrena(titanic.entr, titanic.valid)
+clasificador_titanic.imprime_clasificador()
+print("Rendimiento = " + str(rendimiento(clasificador_titanic, titanic.test)))
