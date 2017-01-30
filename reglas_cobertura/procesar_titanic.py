@@ -60,6 +60,19 @@ def procesar_edad(entr_bruto):
             muestra[1] = 'Mayor'
     return entr_bruto
 
+def atributos_en_muestra(atributos, lista):
+    for elemento in lista:
+        if elemento[0:2] == atributos[0:2] and elemento[3] != atributos[3]:
+            return True
+    return False
+
+def eliminar_incongruencias(entr_bruto):
+    nuevo_entr = []
+    for muestra in entr_bruto:
+        if not atributos_en_muestra(muestra, nuevo_entr):
+            nuevo_entr.append(muestra)
+    return nuevo_entr
+
 def comprobar_proporcion(lista, dif_max):
     for i, numero in enumerate(lista):
         if abs(lista[i-1] - lista[i]) > dif_max:
@@ -71,21 +84,22 @@ def estratificar(entr_bruto, cantidad, dif_max):
     clase = [0, 0, 0]
     edad = [0, 0]
     sexo = [0 ,0]
+    
     while cantidad != 0:
-        muestra = random.choice(entr_bruto)
+        muestra = entr_bruto.pop()
         if 'Primera' in muestra:
             clase[0] += 1
-        elif 'Segunda' in muestra:
+        if 'Segunda' in muestra:
             clase[1] += 1
-        else:
+        if 'Tercera' in muestra:
             clase[2] += 1
         if 'Menor' in muestra:
             edad[0] += 1
-        else:
+        if 'Mayor' in muestra:
             edad[1] += 1
         if 'Femenino' in muestra:
             sexo[0] += 1
-        else:
+        if 'Masculino' in muestra:
             sexo[1] += 1
 
         if comprobar_proporcion(clase, dif_max) and comprobar_proporcion(edad, dif_max) and comprobar_proporcion(sexo, dif_max):
@@ -94,17 +108,17 @@ def estratificar(entr_bruto, cantidad, dif_max):
         else:
             if 'Primera' in muestra:
                 clase[0] -= 1
-            elif 'Segunda' in muestra:
+            if 'Segunda' in muestra:
                 clase[1] -= 1
-            else:
+            if 'Tercera' in muestra:
                 clase[2] -= 1
             if 'Menor' in muestra:
                 edad[0] -= 1
-            else:
+            if 'Mayor' in muestra:
                 edad[1] -= 1
             if 'Femenino' in muestra:
                 sexo[0] -= 1
-            else:
+            if 'Masculino' in muestra:
                 sexo[1] -= 1
     return nuevo_entr
 
@@ -133,11 +147,16 @@ for fila in tabla:
 
     muestra = clasificar(clase, edad, sexo, sobrevive)
     entr_bruto.append(muestra)
+
+random.shuffle(entr_bruto)
+dataset_original = entr_bruto.copy()
+
 entr_bruto = procesar_edad(entr_bruto)
-    
-entr = estratificar(entr_bruto, 10, 1)
-valid = estratificar(entr_bruto, 5, 1)
-test = random.sample(entr_bruto, 5)
+entr_bruto = eliminar_incongruencias(entr_bruto)
+
+entr = estratificar(entr_bruto, 50, 10)
+valid = random.sample(entr_bruto, 10)
+test = random.sample(dataset_original, 10)
 
 titanicpy = open('titanic.py', 'w+')
 titanicpy.write('atributos = ' + str(atributos) + '\n')
