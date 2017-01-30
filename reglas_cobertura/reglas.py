@@ -13,10 +13,6 @@
 # APELLIDOS: HUESO GOMEZ
 # NOMBRE: ROBERTO
 # 
-# Segundo componente (si se trata de un grupo):
-#
-# APELLIDOS
-# NOMBRE:
 # ----------------------------------------------------------------------------
 
 # *****************************************************************************
@@ -1126,6 +1122,29 @@ class ClasificadorCobertura(MetodoClasificacion):
         except ClasificadorNoEntrenado:
             print("Clasificador no entrenado!")
 
+class ClasificadorCoberturaPospoda(ClasificadorCobertura):
+    """
+    Clase base para algoritmo de cobertura con pospoda.
+    """
+
+    def entrena(self,entr,valid):
+        """
+        Método para entrenamiento y ajuste del
+        clasificador.
+        
+        Argumentos de entrada:
+
+        * entr: ejemplos del conjunto de entrenamiento
+        * valid: ejemplos del conjunto de validación.
+                 Algunos clasificadores simples no usan conjunto de
+                 validación, por lo que en esos casos se
+                 omitiría este argumento.
+        """
+        self.reglas_decision = reglas_decision_cobertura(entr, self.atributos, self.clases)
+        self.reglas_decision = poda_RD(self.reglas_decision, valid)
+        self.entrenado = True
+        
+
 #clasificador = ClasificadorCobertura(votos.atributo_clasificación, votos.clases, votos.atributos)
 #clasificador.entrena(votos.entr, votos.valid)
 #clasificador.imprime_clasificador()
@@ -1196,7 +1215,18 @@ class ClasificadorCobertura(MetodoClasificacion):
 
 import titanic
 
-clasificador_titanic = ClasificadorCobertura(titanic.atributo_clasificacion, titanic.clases, titanic.atributos)
-clasificador_titanic.entrena(titanic.entr, titanic.valid)
+print("------Sin pospoda------")
+clasificador_titanic = ClasificadorCobertura(titanic.atributo_clasificacion,
+                                             titanic.clases,
+                                             titanic.atributos)
+clasificador_titanic.entrena(titanic.entr)
 clasificador_titanic.imprime_clasificador()
 print("Rendimiento = " + str(rendimiento(clasificador_titanic, titanic.test)))
+
+print("------Con pospoda------")
+clasificador_titanic_podado = ClasificadorCoberturaPospoda(titanic.atributo_clasificacion,
+                                                           titanic.clases,
+                                                           titanic.atributos)
+clasificador_titanic_podado.entrena(titanic.entr, titanic.valid)
+clasificador_titanic_podado.imprime_clasificador()
+print("Rendimiento = " + str(rendimiento(clasificador_titanic_podado, titanic.test)))
