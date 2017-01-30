@@ -199,18 +199,33 @@ import credito
 # ---------
 
 def contiene_clase(entr, clase):
+    """
+    Comprueba si un conjunto de entrenamiento entr
+    contiene alguna muestra que pertenezca a determinada
+    clase.
+    """
     for muestra in entr:
         if muestra[-1] == clase:
             return True
     return False
 
 def muestra_compatible(muestra, regla):
+    """
+    Comprueba si una muestra es compatible con una regla.
+    
+    Devuelve True si la muestra es compatible y False
+    en caso contrario.
+    """
     for atomo in regla:
         if muestra[atomo[0]] != atomo[1]:
             return False
     return True
 
 def muestras_que_cumplen(entr, regla):
+    """
+    Devuelve las muestras del conjunto entr
+    que cumplen la regla.
+    """
     cumplidoras = []
     for muestra in entr:
         if muestra_compatible(muestra, regla):
@@ -218,6 +233,12 @@ def muestras_que_cumplen(entr, regla):
     return cumplidoras
 
 def muestras_que_cumplen_clase(entr, regla, clase):
+    """
+    Busca las muestras de un conjunto de entrenamiento
+    que cumplen una regla y tienen una determinada clase.
+    
+    Devuelve una lista de muestras.
+    """
     cumplidoras = muestras_que_cumplen(entr, regla)
     cumplidoras_de_clase = []
     for muestra in cumplidoras:
@@ -226,6 +247,13 @@ def muestras_que_cumplen_clase(entr, regla, clase):
     return cumplidoras_de_clase
 
 def contiene_ejemplo_incorrecto(entr, regla, clase):
+    """
+    Comprueba si una regla se ajusta a alguna muestra del
+    conjunto de entrenamiento y la clasifica erroneamente.
+
+    Devuelve True si el conjunto de entrenamiento tiene alguna
+    muestra clasificada incorrectamente y False en caso contrario.
+    """
     muestras_ajustadas = muestras_que_cumplen(entr, regla)
     for muestra in muestras_ajustadas:
         if muestra[-1] != clase:
@@ -233,12 +261,36 @@ def contiene_ejemplo_incorrecto(entr, regla, clase):
     return False
 
 def atributo_en_regla(index, regla):
+    """
+    Comprueba si un atributo se usa en la regla.
+    
+    Dado que nuestros atributos en el dataset estan ordenados,
+    comprobamos si el atributo en la posicion index del
+    dataset esta usado en la regla.
+    """
     for atomo in regla:
         if atomo[0] == index:
             return True
     return False
 
 def mejor_prox_atributo(entr, atributos, regla, clase):
+    """
+    Devuelve el mejor proximo atributo a elegir para usar
+    en la regla.
+
+    En base a las propiedades del algoritmo de cobertura,
+    selecciona cual es el mejor proximo argumento teniendo
+    en cuenta la cantidad y proporcion de ejemplos que cubre.
+    
+    Argumentos:
+    -entr: Conjunto de entrenamiento.
+    -atributos: Atributos del dataset.
+    -regla: Regla que hay creada hasta ahora.
+    -clase: Clase que debe clasificar la regla.
+    
+    Devuelve una lista de 3 elementos con el siguiqnte formato:
+    [proporcion_que_cubre, indice_del_atributo, valor_del_atributo]
+    """
     atributos_asignables = []
     #Comprueba que atributos no estan aun en la regla
     for i, atributo in enumerate(atributos):
@@ -261,11 +313,24 @@ def mejor_prox_atributo(entr, atributos, regla, clase):
     return mejor_actual
 
 def quitar_muestras(original, eliminar):
+    """
+    Elimina las muestras de la lista original
+    que esten contenidas en la lista eliminar.
+    """
     for muestra in eliminar:
         if muestra in original:
             original.remove(muestra)
 
 def cobertura(entr,atributos,clase):
+    """
+    Algoritmo de cobertura para encontrar reglas que clasifican un
+    conjunto de entrenamiento segun unos atributos dados y una clase.
+    
+    Argumentos:
+    -entr: Conjunto de entrenamiento.
+    -atributos: Atributos en base a los cuales se reaiza la clasificacion.
+    -clase: Clase que debe cubrir la regla.
+    """
     conjunto = entr.copy()
     reglas_aprendidas = []
     while contiene_clase(conjunto, clase):
