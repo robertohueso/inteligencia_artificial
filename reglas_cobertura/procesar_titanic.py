@@ -84,9 +84,12 @@ def estratificar(entr_bruto, cantidad, dif_max):
     clase = [0, 0, 0]
     edad = [0, 0]
     sexo = [0 ,0]
+    iteraciones = 0
     
-    while cantidad != 0:
-        muestra = entr_bruto.pop()
+    while cantidad != 0 and iteraciones < 10000:
+        iteraciones += 1
+        muestra = random.choice(entr_bruto)
+        
         if 'Primera' in muestra:
             clase[0] += 1
         if 'Segunda' in muestra:
@@ -104,6 +107,7 @@ def estratificar(entr_bruto, cantidad, dif_max):
 
         if comprobar_proporcion(clase, dif_max) and comprobar_proporcion(edad, dif_max) and comprobar_proporcion(sexo, dif_max):
             nuevo_entr.append(muestra)
+            entr_bruto.remove(muestra)
             cantidad -= 1
         else:
             if 'Primera' in muestra:
@@ -120,7 +124,17 @@ def estratificar(entr_bruto, cantidad, dif_max):
                 sexo[0] -= 1
             if 'Masculino' in muestra:
                 sexo[1] -= 1
+    if cantidad != 0:
+        for i in range(cantidad):
+            nuevo_entr.append(random.choice(entr_bruto))
+            entr_bruto.remove(nuevo_entr[-1])
+    
     return nuevo_entr
+
+def diferencia(contenedora, contenida):
+    for muestra in contenida:
+        if muestra in contenedora:
+            contenedora.remove(muetra)
 
 #Generamos el archivo titanic.py-----------------------------
 
@@ -148,15 +162,14 @@ for fila in tabla:
     muestra = clasificar(clase, edad, sexo, sobrevive)
     entr_bruto.append(muestra)
 
+entr_bruto = procesar_edad(entr_bruto)
 random.shuffle(entr_bruto)
 dataset_original = entr_bruto.copy()
-
-entr_bruto = procesar_edad(entr_bruto)
 entr_bruto = eliminar_incongruencias(entr_bruto)
 
-entr = estratificar(entr_bruto, 50, 10)
-valid = random.sample(entr_bruto, 10)
-test = random.sample(dataset_original, 10)
+entr = estratificar(entr_bruto, 300, 30)
+valid = estratificar(entr_bruto, 50, 5)
+test = random.sample(dataset_original, 200)
 
 titanicpy = open('titanic.py', 'w+')
 titanicpy.write('atributos = ' + str(atributos) + '\n')
