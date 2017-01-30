@@ -548,6 +548,10 @@ def cobertura(entr,atributos,clase):
 # 0.8895705521472392
 
 def apariciones_clase(entr, clase):
+    """
+    Devuelve cuantas veces aparece una clase en un conjunto
+    de entrenamiento.
+    """
     count = 0
     for muestra in entr:
         if muestra[-1] == clase:
@@ -555,6 +559,14 @@ def apariciones_clase(entr, clase):
     return count
 
 def reglas_decision_cobertura(entr,atributos,clases):
+    """
+    Genera las reglas de decision para todas las clases posibles.
+    
+    Toma como argumentos:
+    -entr: Conjunto de entrenamiento.
+    -atributos: Atributos del conjunto de entrenamiento.
+    -clases: Clases del conjunto de entrenamiento.
+    """
     reglas = []
     for clase in clases:
         reglas.append([clase, cobertura(entr, atributos, clase)])
@@ -565,6 +577,10 @@ def reglas_decision_cobertura(entr,atributos,clases):
     return reglas
 
 def imprime_RD(reglas_decision,atributos,atributo_clasificacion):
+    """
+    Muestra en pantalla de forma legible la interpretacion
+    del conjunto de reglas de decision.
+    """
     for clase in reglas_decision:
         for regla in clase[1]:
             string = " * Si "
@@ -581,12 +597,19 @@ def imprime_RD(reglas_decision,atributos,atributo_clasificacion):
 #imprime_RD(reglas, lentes.atributos, lentes.atributo_clasificación)
 
 def se_ajusta(ej, regla):
+    """
+    Comprueba si un ejemplo se ajusta a una regla.
+    """
     for atomo in regla:
         if ej[atomo[0]] != atomo[1]:
             return False
     return True
         
 def clasifica_RD(ej,reglas_decision):
+    """
+    Devuelve la clasificación de un ejemplo segun
+    las reglas de decision.
+    """
     for clase in reglas_decision:
         for regla in clase[1]:
             if se_ajusta(ej, regla):
@@ -596,6 +619,10 @@ def clasifica_RD(ej,reglas_decision):
 #print(clasifica_RD(['Soleado' ,'Suave','Alta','Fuerte'], reglas))
 
 def rendimiento_RD(reglas_decision,ejemplos):
+    """
+    Calcula que proporcion de ejemplos clasifica correctamente
+    un conjunto de reglas de decision.
+    """
     aciertos = 0
     for ejemplo in ejemplos:
         if clasifica_RD(ejemplo, reglas_decision) == ejemplo[-1]:
