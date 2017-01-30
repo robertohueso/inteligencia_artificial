@@ -738,18 +738,33 @@ def rendimiento_RD(reglas_decision,ejemplos):
 # existen técnicas de poda más sofisticadas, que obtienen mejores resultados.
 
 def eliminar_ultima_regla(clase):
+    """ 
+    Elimina la ultima regla de una clase.
+    
+    Tiene como entrada una clase dada en el estilo de reglas_de_decision
+    """
     nueva_clase = clase.copy()
     if len(nueva_clase[1]) > 1:
         nueva_clase[1].remove(nueva_clase[1][-1])
     return nueva_clase
 
 def eliminar_ultima_condicion(regla):
+    """
+    Elimina la ultima condicion de una regla.
+    """
     nueva_regla = regla.copy()
     if len(nueva_regla) > 1:
         del(nueva_regla[-1])
     return nueva_regla
 
 def poda_RD(reglas_de_decision,ejemplos):
+    """
+    Realiza la poda de las reglas de decision acorde al rendimiento en
+    los ejemplos que se le proporciona.
+    
+    En primer lugar intenta la poda de condiciones de una regla.
+    Luego intenta la poda de reglas.
+    """
     #Poda de reglas
     for i, clase in enumerate(reglas_de_decision):
         #Poda de condiciones
