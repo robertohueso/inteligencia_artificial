@@ -100,13 +100,20 @@ def conectados_n_q(n, q):
 # (0, 1)
 # -------------------------------------------------------------------------
 
-
-
-
-
-
-
-
+def silla(a):
+    max_fila = []
+    min_col = []
+    for i in range(len(a)):
+        max_fila.append(max(a[i]))
+        columna = [n[i] for n in a]
+        min_col.append(min(columna))
+    listas = max_fila + min_col
+    for i in listas:
+        if listas.count(i) > 1:
+            x = max_fila.index(i)
+            y = min_col.index(i)
+            return x, y
+    return False
 
 
 # ---------------------------------------------------------------------------
