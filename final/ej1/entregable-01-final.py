@@ -60,13 +60,22 @@
 # -----------------------------------------------------------------------------
 
 
-
-
-
-
-
-
-
+def conectados_n_q(n, q):
+    listas = list()
+    personas = list(range(n))
+    it = 0
+    while any(personas):
+        nueva_lista = [personas[it]]
+        personas[it] = False
+        while True:
+            nueva_persona = (nueva_lista[-1] + q) % n
+            if nueva_lista[0] == nueva_persona:
+                break
+            nueva_lista.append(personas[nueva_persona])
+            personas[nueva_persona] = False
+        listas.append(nueva_lista)
+        it += 1
+    return listas
 
 
 # -----------------------------------------------------------------------------
