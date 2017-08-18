@@ -139,3 +139,22 @@ def silla(a):
 # ['g', 'e', 'c', 'f', 'g']
 # ----------------------------------------------------------------------------
 
+def ciclo_recursivo(g, visitados):
+    for conectado in g[visitados[-1]]:
+        visitados.append(conectado)
+        if len(visitados) > len(g):
+            return False
+        elif conectado == visitados[0]:
+            return visitados
+        elif ciclo_recursivo(g, visitados):
+            return visitados
+        visitados.pop()
+    return False
+
+def ciclo(g):
+    for nodo in g.keys():
+        visitados = [nodo]
+        ciclo = ciclo_recursivo(g, visitados)
+        if ciclo != False:
+            return ciclo
+    return False
