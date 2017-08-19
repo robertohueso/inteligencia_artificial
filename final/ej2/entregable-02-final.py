@@ -203,8 +203,70 @@ class Problema(object):
 # un fichero (por ejemplo, como la variable lab1 del ejemplo anterior).    
 # --------------------------------------------------------------------------
 
+class Laberinto_Cuatro_Esquinas(Problema):
+    
+    class Movimientos():
+        ARRIBA = (-1, 0)
+        ABAJO = (1, 0)
+        IZQUIERDA = (0, -1)
+        DERECHA = (0, 1)
+    
+    def __init__(self, laberinto):
+        estado_inicial = {'pos': list(laberinto[2]),
+                          'lab': laberinto[1]}
+        self.tamano = laberinto[0]
+        tam_ajust = (self.tamano[0] - 1, self.tamano[1] - 1)
+        super().__init__(estado_inicial)
+        e_final_gen = list(estado_inicial)
+        e_final_gen['lab'][0][0] = 2
+        e_final_gen['lab'][0][tam_ajust[1]] = 2
+        e_final_gen['lab'][tam_ajust[0]][0] = 2
+        e_final_gen['lab'][tam_ajust[0]][tam_ajust[1]] = 2
+        self.estado_final = [list(e_final_gen) for i in range(4)]
+        self.estado_final[0]['pos'] = [0, 0]
+        self.estado_final[1]['pos'] = [0, tam_ajust[1]]
+        self.estado_final[2]['pos'] = [tam_ajust[0], tam_ajust[1]]
+        self.estado_final[3]['pos'] = [tam_ajust[0], 0]
 
+    def acciones(self, estado):
+        acciones = []
+        pos = estado['pos']
+        lab = estado['lab']
+        acciones.append(Movimientos.ARRIBA)
+        acciones.append(Movimientos.ABAJO)
+        acciones.append(Movimientos.IZQUIERDA)
+        acciones.append(Movimientos.DERECHA)
+        if pos[0] == 0:
+            acciones.remove(Movimientos.ARRIBA)
+        if pos[0] == self.tamano[0] - 1:
+            acciones.remove(Movimientos.ABAJO)
+        if pos[1] == 0:
+            acciones.remove(Movimientos.IZQUIERDA)
+        if pos[1] == self.tamano[1] - 1:
+            acciones.remove(Movimientos.DERECHA)
+        return acciones
 
+    def aplica(self, estado, accion):
+        estado['pos'] = [sum(x) for x in zip(pos, accion)]
+        pos = estado['pos']
+        if pos == [0, 0]:
+            estado['lab'][0][0] = 2
+        elif pos == [0, self.tamano[1] - 1]:
+            estado['lab'][0][self.tamano[1] - 1] = 2
+        elif pos == [self.tamano[0] - 1, 0]:
+            estado['lab'][self.tamano[0] - 1][0] = 2
+        elif pos == [self.tamano[0] - 1, self.tamano[1] - 1]:
+            estado['lab'][self.tamano[0] - 1][self.tamano[1] - 1] = 2
+        return estado
+    
+    def es_estado_final(self, estado):
+        if estado in self.estado_final:
+            return True
+        else:
+            return False
+
+    def coste_de_aplicar_accion(self, estado, accion):
+        super().coste_de_aplicar_accion(estado, accion)
 # -----------------------------------------------------------------------------
 # (2)
 
