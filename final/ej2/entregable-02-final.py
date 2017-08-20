@@ -214,16 +214,16 @@ class Laberinto_Cuatro_Esquinas(Problema):
     def __init__(self, laberinto):
         estado_inicial = {'pos': list(laberinto[2]),
                           'lab': laberinto[1],
-                          'tam': laberinto(0)}
+                          'tam': laberinto[0]}
         self.tamano = laberinto[0]
         tam_ajust = (self.tamano[0] - 1, self.tamano[1] - 1)
         super().__init__(estado_inicial)
-        e_final_gen = list(estado_inicial)
+        e_final_gen = dict(estado_inicial)
         e_final_gen['lab'][0][0] = 2
         e_final_gen['lab'][0][tam_ajust[1]] = 2
         e_final_gen['lab'][tam_ajust[0]][0] = 2
         e_final_gen['lab'][tam_ajust[0]][tam_ajust[1]] = 2
-        self.estado_final = [list(e_final_gen) for i in range(4)]
+        self.estado_final = [dict(e_final_gen) for i in range(4)]
         self.estado_final[0]['pos'] = [0, 0]
         self.estado_final[1]['pos'] = [0, tam_ajust[1]]
         self.estado_final[2]['pos'] = [tam_ajust[0], tam_ajust[1]]
@@ -339,7 +339,9 @@ def h1_cuatro_esquinas(estado):
 # >>> p1e.analizados
 # 195
 
+from algoritmos_de_busqueda import búsqueda_en_profundidad
 
+lab1 = lee_laberinto('laberinto1.txt')
 
-
-
+laberinto = Laberinto_Cuatro_Esquinas(lab1)
+búsqueda_en_profundidad(laberinto)
