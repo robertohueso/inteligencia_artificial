@@ -213,7 +213,8 @@ class Laberinto_Cuatro_Esquinas(Problema):
     
     def __init__(self, laberinto):
         estado_inicial = {'pos': list(laberinto[2]),
-                          'lab': laberinto[1]}
+                          'lab': laberinto[1],
+                          'tam': laberinto(0)}
         self.tamano = laberinto[0]
         tam_ajust = (self.tamano[0] - 1, self.tamano[1] - 1)
         super().__init__(estado_inicial)
@@ -274,6 +275,18 @@ class Laberinto_Cuatro_Esquinas(Problema):
 # problema. Las dos funciones heurísticas deben de llamarse, respectivamente
 # h1_cuatro_esquinas y h2_cuatro_esquinas  (¡ojo, con esos nombres!)
 # --------------------------------------------------------------------------
+
+def h1_cuatro_esquinas(estado):
+    
+    def distancia(posicion, esquina):
+        return sum([abs(a - b) for a, b in zip(posicion, esquina)])
+    
+    pos = estado['pos']
+    esquinas = [[0, 0],
+                [0, estado['tam'][1] - 1],
+                [estado['tam'][0] - 1, 0],
+                [estado['tam'][0] - 1, estado['tam'][1] - 1]]
+    return min([distancia(pos, esq) for esq in esquinas])
 
 
 
