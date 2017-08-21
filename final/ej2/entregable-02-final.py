@@ -210,55 +210,66 @@ class Laberinto_Cuatro_Esquinas(Problema):
         ABAJO = (1, 0)
         IZQUIERDA = (0, -1)
         DERECHA = (0, 1)
-    
+
+    def tupla(self, estado):
+        nuevo_estado = (tuple(estado[0]),
+                        tuple(tuple(x) for x in estado[1]),
+                        tuple(estado[2]))
+        return nuevo_estado
+
+    def lista(self, estado):
+        nuevo_estado = [list(estado[0]),
+                        list(list(x) for x in estado[1]),
+                        list(estado[2])]
+        return nuevo_estado
+        
     def __init__(self, laberinto):
-        estado_inicial = {'pos': list(laberinto[2]),
-                          'lab': laberinto[1],
-                          'tam': laberinto[0]}
-        self.tamano = laberinto[0]
+        estado_inicial = self.tupla(laberinto)
+        self.tamano = estado_inicial[0]
         tam_ajust = (self.tamano[0] - 1, self.tamano[1] - 1)
         super().__init__(estado_inicial)
-        e_final_gen = dict(estado_inicial)
-        e_final_gen['lab'][0][0] = 2
-        e_final_gen['lab'][0][tam_ajust[1]] = 2
-        e_final_gen['lab'][tam_ajust[0]][0] = 2
-        e_final_gen['lab'][tam_ajust[0]][tam_ajust[1]] = 2
-        self.estado_final = [dict(e_final_gen) for i in range(4)]
-        self.estado_final[0]['pos'] = [0, 0]
-        self.estado_final[1]['pos'] = [0, tam_ajust[1]]
-        self.estado_final[2]['pos'] = [tam_ajust[0], tam_ajust[1]]
-        self.estado_final[3]['pos'] = [tam_ajust[0], 0]
+        e_final_gen = self.lista(estado_inicial)
+        e_final_gen[1][0][0] = 2
+        e_final_gen[1][0][tam_ajust[1]] = 2
+        e_final_gen[1][tam_ajust[0]][0] = 2
+        e_final_gen[1][tam_ajust[0]][tam_ajust[1]] = 2
+        self.estado_final = [list(e_final_gen) for i in range(4)]
+        self.estado_final[0][2] = [0, 0]
+        self.estado_final[1][2] = [0, tam_ajust[1]]
+        self.estado_final[2][2] = [tam_ajust[0], tam_ajust[1]]
+        self.estado_final[3][2] = [tam_ajust[0], 0]
+        self.estado_final = set(self.tupla(estado) for estado in self.estado_final)
 
     def acciones(self, estado):
         acciones = []
-        pos = estado['pos']
-        lab = estado['lab']
-        acciones.append(Movimientos.ARRIBA)
-        acciones.append(Movimientos.ABAJO)
-        acciones.append(Movimientos.IZQUIERDA)
-        acciones.append(Movimientos.DERECHA)
+        pos = estado[2]
+        acciones.append(self.Movimientos.ARRIBA)
+        acciones.append(self.Movimientos.ABAJO)
+        acciones.append(self.Movimientos.IZQUIERDA)
+        acciones.append(self.Movimientos.DERECHA)
         if pos[0] == 0:
-            acciones.remove(Movimientos.ARRIBA)
+            acciones.remove(self.Movimientos.ARRIBA)
         if pos[0] == self.tamano[0] - 1:
-            acciones.remove(Movimientos.ABAJO)
+            acciones.remove(self.Movimientos.ABAJO)
         if pos[1] == 0:
-            acciones.remove(Movimientos.IZQUIERDA)
+            acciones.remove(self.Movimientos.IZQUIERDA)
         if pos[1] == self.tamano[1] - 1:
-            acciones.remove(Movimientos.DERECHA)
+            acciones.remove(self.Movimientos.DERECHA)
         return acciones
 
     def aplica(self, estado, accion):
-        estado['pos'] = [sum(x) for x in zip(pos, accion)]
-        pos = estado['pos']
+        n_estado = self.lista(estado)
+        pos = [sum(x) for x in zip(n_estado[2], accion)]
+        n_estado[2] = pos
         if pos == [0, 0]:
-            estado['lab'][0][0] = 2
+            n_estado[1][0][0] = 2
         elif pos == [0, self.tamano[1] - 1]:
-            estado['lab'][0][self.tamano[1] - 1] = 2
+            n_estado[1][0][self.tamano[1] - 1] = 2
         elif pos == [self.tamano[0] - 1, 0]:
-            estado['lab'][self.tamano[0] - 1][0] = 2
+            n_estado[1][self.tamano[0] - 1][0] = 2
         elif pos == [self.tamano[0] - 1, self.tamano[1] - 1]:
-            estado['lab'][self.tamano[0] - 1][self.tamano[1] - 1] = 2
-        return estado
+            n_estado[1][self.tamano[0] - 1][self.tamano[1] - 1] = 2
+        return self.tupla(n_estado)
     
     def es_estado_final(self, estado):
         if estado in self.estado_final:
@@ -266,8 +277,6 @@ class Laberinto_Cuatro_Esquinas(Problema):
         else:
             return False
 
-    def coste_de_aplicar_accion(self, estado, accion):
-        super().coste_de_aplicar_accion(estado, accion)
 # -----------------------------------------------------------------------------
 # (2)
 
@@ -338,10 +347,20 @@ def h1_cuatro_esquinas(estado):
 # 28
 # >>> p1e.analizados
 # 195
+def pp_resultado(resultado):
+    for accion in resultado:
+        if accion == (-1, 0):
+            print('Arriba')
+        elif accion == (1, 0):
+            print('Abajo')
+        elif accion == (0, -1):
+            print('Izquierda')
+        elif accion == (0, 1):
+            print('Derecha')
 
 from algoritmos_de_busqueda import búsqueda_en_profundidad
 
 lab1 = lee_laberinto('laberinto1.txt')
 
-laberinto = Laberinto_Cuatro_Esquinas(lab1)
-búsqueda_en_profundidad(laberinto)
+p1 = Laberinto_Cuatro_Esquinas(lab1)
+pp_resultado(búsqueda_en_profundidad(p1).solucion())
