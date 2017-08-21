@@ -293,6 +293,8 @@ class Laberinto_Cuatro_Esquinas(Problema):
 # h1_cuatro_esquinas y h2_cuatro_esquinas  (¡ojo, con esos nombres!)
 # --------------------------------------------------------------------------
 
+import math
+
 def h1_cuatro_esquinas(estado):
     
     def distancia(posicion, esquina):
@@ -305,7 +307,17 @@ def h1_cuatro_esquinas(estado):
                 [estado[0][0] - 1, estado[0][1] - 1]]
     return min(distancia(pos, esq) for esq in esquinas)
 
-
+def h2_cuatro_esquinas(estado):
+    #Distancia euclidea
+    def distancia(posicion, esquina):
+        return math.sqrt(sum(abs(a - b) ** 2 for a, b in zip(posicion, esquina)))
+    
+    pos = estado[2]
+    esquinas = [[0, 0],
+                [0, estado[0][1] - 1],
+                [estado[0][0] - 1, 0],
+                [estado[0][0] - 1, estado[0][1] - 1]]
+    return min(distancia(pos, esq) for esq in esquinas)
 
 # -----------------------------------------------------------------------------
 # (3)
@@ -355,7 +367,8 @@ def h1_cuatro_esquinas(estado):
 # 28
 # >>> p1e.analizados
 # 195
-def pp_resultado(resultado):
+def pp_resultado(resultado, titulo):
+    print('------' + titulo + '------')
     for accion in resultado:
         if accion == (-1, 0):
             print('Arriba')
@@ -367,11 +380,32 @@ def pp_resultado(resultado):
             print('Derecha')
 
 from algoritmos_de_busqueda import búsqueda_en_profundidad
+from algoritmos_de_busqueda import búsqueda_en_anchura
+from algoritmos_de_busqueda import búsqueda_coste_uniforme
+from algoritmos_de_busqueda import búsqueda_primero_el_mejor
 from algoritmos_de_busqueda import búsqueda_a_estrella
 
 lab1 = lee_laberinto('laberinto1.txt')
+lab2 = lee_laberinto('laberinto2.txt')
+lab3 = lee_laberinto('laberinto3.txt')
+lab4 = lee_laberinto('laberinto4.txt')
+lab5 = lee_laberinto('laberinto5.txt')
 
 p1 = Laberinto_Cuatro_Esquinas(lab1)
-busqueda = búsqueda_a_estrella(p1, h1_cuatro_esquinas)
-pp_resultado(busqueda.solucion())
-print(len(busqueda.solucion()))
+p2 = Laberinto_Cuatro_Esquinas(lab2)
+p3 = Laberinto_Cuatro_Esquinas(lab3)
+p4 = Laberinto_Cuatro_Esquinas(lab4)
+p5 = Laberinto_Cuatro_Esquinas(lab5)
+
+estr_p1 = búsqueda_a_estrella(p1, h1_cuatro_esquinas)
+anch_p2 = búsqueda_en_anchura(p2)
+prof_p3 = búsqueda_en_profundidad(p3)
+cost_p4 = búsqueda_coste_uniforme(p4)
+prim_p5 = búsqueda_primero_el_mejor(p5, h2_cuatro_esquinas)
+
+pp_resultado(estr_p1.solucion(), 'Estrella P1')
+print(len(estr_p1.solucion()))
+pp_resultado(anch_p2.solucion(), 'Anchura  P2')
+print(len(anch_p2.solucion()))
+pp_resultado(cost_p4.solucion(), 'Coste Uniforme  P4')
+print(len(cost_p4.solucion()))
