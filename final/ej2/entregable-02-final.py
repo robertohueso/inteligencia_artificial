@@ -242,20 +242,28 @@ class Laberinto_Cuatro_Esquinas(Problema):
 
     def acciones(self, estado):
         acciones = []
+        tam = estado[0]
+        lab = estado[1]
         pos = estado[2]
+        #Comprueba que no haya muro
+        def comprobar_uno(accion):
+            nueva_pos = tuple(sum(x) for x in zip(pos, accion))
+            return lab[nueva_pos[0]][nueva_pos[1]] == 1
+        #Aniade acciones
         acciones.append(self.Movimientos.ARRIBA)
         acciones.append(self.Movimientos.ABAJO)
         acciones.append(self.Movimientos.IZQUIERDA)
         acciones.append(self.Movimientos.DERECHA)
-        if pos[0] == 0:
+        #Comprobamos bordes y entornos
+        if pos[0] == 0 or comprobar_uno(self.Movimientos.ARRIBA):
             acciones.remove(self.Movimientos.ARRIBA)
-        if pos[0] == self.tamano[0] - 1:
+        if pos[0] == self.tamano[0] - 1 or comprobar_uno(self.Movimientos.ABAJO):
             acciones.remove(self.Movimientos.ABAJO)
-        if pos[1] == 0:
+        if pos[1] == 0 or comprobar_uno(self.Movimientos.IZQUIERDA):
             acciones.remove(self.Movimientos.IZQUIERDA)
-        if pos[1] == self.tamano[1] - 1:
+        if pos[1] == self.tamano[1] - 1 or comprobar_uno(self.Movimientos.DERECHA):
             acciones.remove(self.Movimientos.DERECHA)
-        return acciones
+        return tuple(acciones)
 
     def aplica(self, estado, accion):
         n_estado = self.lista(estado)
@@ -288,14 +296,14 @@ class Laberinto_Cuatro_Esquinas(Problema):
 def h1_cuatro_esquinas(estado):
     
     def distancia(posicion, esquina):
-        return sum([abs(a - b) for a, b in zip(posicion, esquina)])
+        return sum(abs(a - b) for a, b in zip(posicion, esquina))
     
-    pos = estado['pos']
+    pos = estado[2]
     esquinas = [[0, 0],
-                [0, estado['tam'][1] - 1],
-                [estado['tam'][0] - 1, 0],
-                [estado['tam'][0] - 1, estado['tam'][1] - 1]]
-    return min([distancia(pos, esq) for esq in esquinas])
+                [0, estado[0][1] - 1],
+                [estado[0][0] - 1, 0],
+                [estado[0][0] - 1, estado[0][1] - 1]]
+    return min(distancia(pos, esq) for esq in esquinas)
 
 
 
@@ -359,8 +367,11 @@ def pp_resultado(resultado):
             print('Derecha')
 
 from algoritmos_de_busqueda import búsqueda_en_profundidad
+from algoritmos_de_busqueda import búsqueda_a_estrella
 
 lab1 = lee_laberinto('laberinto1.txt')
 
 p1 = Laberinto_Cuatro_Esquinas(lab1)
-pp_resultado(búsqueda_en_profundidad(p1).solucion())
+busqueda = búsqueda_a_estrella(p1, h1_cuatro_esquinas)
+pp_resultado(busqueda.solucion())
+print(len(busqueda.solucion()))
