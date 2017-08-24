@@ -94,14 +94,36 @@
 
 # =========== Solución
 
+def inferencia_enumeracion(var,observado,red):
+    #Variables
+    distribucion = {}
+    variables = red[0]
+    padres = red[1]
+    prob = red[2]
+    
+    #Funciones auxiliares
+    def normaliza(distribucion):
+        for valor, probabilidad in distribucion.items():
+            distribucion[valor] = probabilidad / sum(distribucion.values())
+        return distribucion
 
+    def p(variable, valor, padre, observado):
+        pass
 
+    def enum_aux(variables, observado, red):
+        if len(variables) == 0:
+            return 1
+        for variable in variables:
+            if variable in observado:
+                pass
+            else:
+                pass
 
-
-
-
-
-
+    #Algoritmo
+    for valor in variables[var]:
+        observado[var] = valor
+        distribucion[valor] = enum_aux(variables, observado, red)
+    return normaliza(distribucion)
 
 
 
