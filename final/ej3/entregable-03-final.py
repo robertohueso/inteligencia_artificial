@@ -97,8 +97,6 @@
 def inferencia_enumeracion(var,observado,red):
     #Variables
     distribucion = {}
-    #padres = red[1]
-    #prob = red[2]
     
     #Funciones auxiliares
     def normaliza(distribucion):
@@ -117,10 +115,10 @@ def inferencia_enumeracion(var,observado,red):
             nodos.remove(nodo)
         while len(nodos) > 0:
             for nodo in nodos:
-                for padre in red[nodo]:
-                    if padre in lista and nodo not in lista:
-                        lista.append(nodo)
-                        nodos.remove(nodo)
+                padres = red[nodo]
+                if set(padres) <= set(lista) and (nodo not in lista):
+                    lista.append(nodo)
+                    nodos.remove(nodo)
         lista.reverse()
         return lista
 
@@ -152,9 +150,6 @@ def inferencia_enumeracion(var,observado,red):
         observado[var] = valor
         distribucion[valor] = enum_aux(variables(red), observado, red)
     return normaliza(distribucion)
-
-
-
 
 # ==========================
 
@@ -391,13 +386,3 @@ red_arranque_coche=[{"Alternador OK":[True,False],
                                            ("muy_mal", "bien"):[ 0.1, 0.9],
                                            ("muy_mal", "mal"):[ 0.01, 0.99],
                                            ("muy_mal", "muy_mal"):[ 0.0, 1.0]}}]
-
-
-
-val = inferencia_enumeracion("robo",{"juanllama":True,"mariallama":True},red_alarma)
-# {False: 0.7158281646356071, True: 0.2841718353643929}
-#inferencia_enumeracion("robo",{"juanllama":False,"mariallama":True},red_alarma)
-# {False: 0.993123753926579, True: 0.006876246073421025}
-#inferencia_enumeracion("terremoto",{"juanllama":True,"mariallama":False},red_alarma)
-print('Resultado:')
-print(val)
