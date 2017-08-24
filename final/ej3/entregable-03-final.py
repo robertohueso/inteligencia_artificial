@@ -108,10 +108,21 @@ def inferencia_enumeracion(var,observado,red):
         return distribucion
 
     def variables(red):
-        parentesco = list(red[1].items())
-        parentesco.sort(key = lambda x: len(x[1]), reverse = True)
-        #return list(x for x, y in parentesco)
-        return ['juanllama', 'mariallama', 'alarma', 'terremoto', 'robo']
+        #Devuelve los nodos en orden de arriba a abajo
+        lista = []
+        red = red[1]
+        nodos = list(red.keys())
+        lista = list(nodo for nodo in nodos if len(red[nodo]) == 0)
+        for nodo in lista:
+            nodos.remove(nodo)
+        while len(nodos) > 0:
+            for nodo in nodos:
+                for padre in red[nodo]:
+                    if padre in lista and nodo not in lista:
+                        lista.append(nodo)
+                        nodos.remove(nodo)
+        lista.reverse()
+        return lista
 
     def p(variable, valor, observado):
         posicion = red[0][variable].index(valor)
