@@ -97,32 +97,49 @@
 def inferencia_enumeracion(var,observado,red):
     #Variables
     distribucion = {}
-    variables = red[0]
-    padres = red[1]
-    prob = red[2]
+    #padres = red[1]
+    #prob = red[2]
     
     #Funciones auxiliares
     def normaliza(distribucion):
+        suma = sum(distribucion.values())
         for valor, probabilidad in distribucion.items():
-            distribucion[valor] = probabilidad / sum(distribucion.values())
+            distribucion[valor] = probabilidad / suma
         return distribucion
 
-    def p(variable, valor, padre, observado):
-        pass
+    def variables(red):
+        parentesco = list(red[1].items())
+        parentesco.sort(key = lambda x: len(x[1]), reverse = True)
+        #return list(x for x, y in parentesco)
+        return ['juanllama', 'mariallama', 'alarma', 'terremoto', 'robo']
+
+    def p(variable, valor, observado):
+        posicion = red[0][variable].index(valor)
+        padres = red[1][variable]
+        valores_padres = [observado[padre] for padre in padres]
+        valores_padres = tuple(valores_padres)
+        probabilidad = red[2][variable][valores_padres][posicion]
+        return probabilidad
 
     def enum_aux(variables, observado, red):
         if len(variables) == 0:
             return 1
-        for variable in variables:
-            if variable in observado:
-                pass
-            else:
-                pass
+        variables = list(variables)
+        y = variables.pop()
+        if y in observado:
+            return p(y, observado[y], observado) * enum_aux(variables, observado, red)
+        else:
+            suma = 0
+            for v_y in red[0][y]:
+                nuevo_observado = dict(observado)
+                nuevo_observado[y] = v_y
+                suma += p(y, v_y, observado) * enum_aux(variables, nuevo_observado, red)
+            return suma
 
     #Algoritmo
-    for valor in variables[var]:
+    for valor in red[0][var]:
         observado[var] = valor
-        distribucion[valor] = enum_aux(variables, observado, red)
+        distribucion[valor] = enum_aux(variables(red), observado, red)
     return normaliza(distribucion)
 
 
@@ -366,3 +383,10 @@ red_arranque_coche=[{"Alternador OK":[True,False],
 
 
 
+val = inferencia_enumeracion("robo",{"juanllama":True,"mariallama":True},red_alarma)
+# {False: 0.7158281646356071, True: 0.2841718353643929}
+#inferencia_enumeracion("robo",{"juanllama":False,"mariallama":True},red_alarma)
+# {False: 0.993123753926579, True: 0.006876246073421025}
+#inferencia_enumeracion("terremoto",{"juanllama":True,"mariallama":False},red_alarma)
+print('Resultado:')
+print(val)
