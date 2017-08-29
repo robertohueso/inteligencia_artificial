@@ -824,6 +824,7 @@ def rendimiento_RD(reglas_decision,ejemplos):
 # de los votos, el conjunto podado no mejora al conjunto sin podar. Decir que
 # aunque la técnica de podar que aquí se pide es simple y bastante aceptable,
 # existen técnicas de poda más sofisticadas, que obtienen mejores resultados.
+import copy
 
 def eliminar_ultima_regla(clase):
     """ 
@@ -845,6 +846,27 @@ def eliminar_ultima_condicion(regla):
         del(nueva_regla[-1])
     return nueva_regla
 
+def poda_regla(rd, ejemplos):
+    podas = []
+    for i, clase in enumerate(rd):
+        if len(rd[i][1]) > 1:
+            nuevas_rd = copy.deepcopy(rd)
+            nuevas_rd[i][1].remove(nuevas_rd[i][1][-1])
+            rendimiento = rendimiento_RD(nuevas_rd, ejemplos)
+            podas.append((rendimiento, nuevas_rd))
+    return podas
+
+def poda_condiciones(rd, ejemplos):
+    podas = []
+    for i, clase in enumerate(rd):
+        for j, regla in enumerate(clase[1]):
+            if len(regla) > 1:
+                nuevas_rd = copy.deepcopy(rd)
+                nuevas_rd[i][1][j].pop()
+                rendimiento = rendimiento_RD(nuevas_rd, ejemplos)
+                podas.append((rendimiento, nuevas_rd))
+    return podas
+
 def poda_RD(reglas_de_decision,ejemplos):
     """
     Realiza la poda de las reglas de decision acorde al rendimiento en
@@ -853,6 +875,30 @@ def poda_RD(reglas_de_decision,ejemplos):
     En primer lugar intenta la poda de condiciones de una regla.
     Luego intenta la poda de reglas.
     """
+    continuar = True
+    mejores_reglas = copy.deepcopy(reglas_de_decision)
+    mejor_rendimiento = rendimiento_RD(mejores_reglas, ejemplos)
+    while continuar:
+    #for i in range(100):
+        podas = []
+        #Poda condiciones
+        podas += poda_condiciones(mejores_reglas, ejemplos)
+        #Poda reglas
+        podas += poda_regla(mejores_reglas, ejemplos)
+        podas.sort(key = lambda x: x[0])
+        k = podas.pop()
+        #print(k)
+        print([x for x,y in podas])
+        #print('Nuevo:' + str(k[0]))
+        #print('Viejo: ' + str(mejor_rendimiento))
+        if k[0] > mejor_rendimiento:
+            mejores_reglas = k[1]
+            mejor_rendimiento = k[0]
+        else:
+            continuar = False
+    return mejores_reglas
+
+'''
     #Poda de reglas
     for i, clase in enumerate(reglas_de_decision):
         #Poda de condiciones
@@ -868,6 +914,7 @@ def poda_RD(reglas_de_decision,ejemplos):
         if rendimiento_RD(reglas_de_decision, ejemplos) < rendimiento_inicial:
             reglas_de_decision[i] = rd_inicial
     return reglas_de_decision
+'''
 
 #votos_rd = reglas_decision_cobertura(votos.entr, votos.atributos, votos.clases)
 #print("Rendimiento inicial: " + str(rendimiento_RD(votos_rd, votos.test)))
