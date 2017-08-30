@@ -826,26 +826,6 @@ def rendimiento_RD(reglas_decision,ejemplos):
 # existen técnicas de poda más sofisticadas, que obtienen mejores resultados.
 import copy
 
-def eliminar_ultima_regla(clase):
-    """ 
-    Elimina la ultima regla de una clase.
-    
-    Tiene como entrada una clase dada en el estilo de reglas_de_decision
-    """
-    nueva_clase = clase.copy()
-    if len(nueva_clase[1]) > 1:
-        nueva_clase[1].remove(nueva_clase[1][-1])
-    return nueva_clase
-
-def eliminar_ultima_condicion(regla):
-    """
-    Elimina la ultima condicion de una regla.
-    """
-    nueva_regla = regla.copy()
-    if len(nueva_regla) > 1:
-        del(nueva_regla[-1])
-    return nueva_regla
-
 def poda_regla(rd, ejemplos):
     podas = []
     for i, clase in enumerate(rd):
@@ -885,36 +865,17 @@ def poda_RD(reglas_de_decision,ejemplos):
         podas += poda_condiciones(mejores_reglas, ejemplos)
         #Poda reglas
         podas += poda_regla(mejores_reglas, ejemplos)
-        podas.sort(key = lambda x: x[0])
-        k = podas.pop()
-        #print(k)
-        print([x for x,y in podas])
-        #print('Nuevo:' + str(k[0]))
-        #print('Viejo: ' + str(mejor_rendimiento))
-        if k[0] > mejor_rendimiento:
-            mejores_reglas = k[1]
+        if len(podas) > 0:
+            podas.sort(key = lambda x: x[0])
+            k = podas.pop()
+        else:
+            break
+        if mejor_rendimiento <= k[0]:
             mejor_rendimiento = k[0]
+            mejores_reglas = k[1]
         else:
             continuar = False
     return mejores_reglas
-
-'''
-    #Poda de reglas
-    for i, clase in enumerate(reglas_de_decision):
-        #Poda de condiciones
-        for j, regla in enumerate(clase[1]):
-            regla_inicial = regla.copy()
-            rendimiento_inicial = rendimiento_RD(reglas_de_decision, ejemplos)
-            clase[1][j] = eliminar_ultima_condicion(regla)
-            if rendimiento_RD(reglas_de_decision, ejemplos) < rendimiento_inicial:
-                clase[1][j] = regla_inicial
-        rd_inicial = reglas_de_decision.copy()
-        rendimiento_inicial = rendimiento_RD(reglas_de_decision, ejemplos)
-        reglas_de_decision[i] = eliminar_ultima_regla(clase)
-        if rendimiento_RD(reglas_de_decision, ejemplos) < rendimiento_inicial:
-            reglas_de_decision[i] = rd_inicial
-    return reglas_de_decision
-'''
 
 #votos_rd = reglas_decision_cobertura(votos.entr, votos.atributos, votos.clases)
 #print("Rendimiento inicial: " + str(rendimiento_RD(votos_rd, votos.test)))
