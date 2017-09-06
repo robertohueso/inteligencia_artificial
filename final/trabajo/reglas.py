@@ -827,6 +827,14 @@ def rendimiento_RD(reglas_decision,ejemplos):
 import copy
 
 def poda_regla(rd, ejemplos):
+    """
+    Realiza todas las podas de reglas posibles a un conjunto
+    de reglas de decision
+    
+    Devuelve una lista en la que cada elemento se corresponde
+    con un nuevo conjunto de reglas de decision junto con su
+    rendimiento (rendimiento, rd)
+    """
     podas = []
     for i, clase in enumerate(rd):
         if len(rd[i][1]) > 1:
@@ -837,6 +845,14 @@ def poda_regla(rd, ejemplos):
     return podas
 
 def poda_condiciones(rd, ejemplos):
+    """
+    Realiza todas las podas de condiciones posibles a un conjunto
+    de reglas de decision
+    
+    Devuelve una lista en la que cada elemento se corresponde
+    con un nuevo conjunto de reglas de decision junto con su
+    rendimiento (rendimiento, rd)
+    """
     podas = []
     for i, clase in enumerate(rd):
         for j, regla in enumerate(clase[1]):
@@ -852,14 +868,12 @@ def poda_RD(reglas_de_decision,ejemplos):
     Realiza la poda de las reglas de decision acorde al rendimiento en
     los ejemplos que se le proporciona.
     
-    En primer lugar intenta la poda de condiciones de una regla.
-    Luego intenta la poda de reglas.
+    De forma iterativa se va quedando con las mejores podas posibles.
     """
     continuar = True
     mejores_reglas = copy.deepcopy(reglas_de_decision)
     mejor_rendimiento = rendimiento_RD(mejores_reglas, ejemplos)
     while continuar:
-    #for i in range(100):
         podas = []
         #Poda condiciones
         podas += poda_condiciones(mejores_reglas, ejemplos)
