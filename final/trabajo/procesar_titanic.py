@@ -169,7 +169,7 @@ entr_bruto = eliminar_incongruencias(entr_bruto)
 
 entr = estratificar(entr_bruto, 300, 30)
 valid = estratificar(entr_bruto, 50, 5)
-test = random.sample(dataset_original, 200)
+test = random.sample(dataset_original, 50)
 
 titanicpy = open('titanic.py', 'w+')
 titanicpy.write('atributos = ' + str(atributos) + '\n')
